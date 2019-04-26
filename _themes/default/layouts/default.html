@@ -1,0 +1,17 @@
+{{ define "layout" }}
+<!DOCTYPE html>
+<html lang="it-it">
+    {{ template "head" . }}
+  <body class="layout-reverse">
+
+    {{ template "sidebar" .BlogName }}
+
+    <div class="content container">
+      {{ .HtmlContent }}
+    </div>
+
+  </body>
+</html>
+
+{{ end }}
+{{ template "layout" . }}
