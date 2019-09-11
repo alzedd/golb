@@ -1,5 +1,2 @@
-- feat: minimum test configs
-- feat: improves user messages
-- feat: moves command in a separate pkg
-- feat: implement saving assets
-- feat: add blog categories login + code cleanup
+- chores: minor refactor
+- initial commit
