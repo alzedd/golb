@@ -5,7 +5,7 @@ import (
 	"golb/taxonomy"
 )
 
-func CommandBuild() {
+func Build() {
 	pr := taxonomy.NewPageRepository()
 	savingService := saving.NewService(pr)
 	savingService.SaveAll()

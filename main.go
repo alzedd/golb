@@ -9,22 +9,20 @@ import (
 const BUILD_COMMAND = "build"
 const DEV_WEBSERVER_COMMAND = "develop"
 
-var availableCommands []string
+var availableCommands []string = getAvailableCommands()
 
 func main() {
-
 	command := os.Args[1]
-	availableCommands = getAvailableCommands()
 
 	if isValidCommand(command) {
 		defer fmt.Printf("\n\nEverything done! Goodbye.\n\n")
 
 		switch command {
 		case BUILD_COMMAND:
-			commands.CommandBuild()
+			commands.Build()
 			break
 		case DEV_WEBSERVER_COMMAND:
-			commands.CommandDevelop()
+			commands.Develop()
 			break
 		}
 	} else {
@@ -34,10 +32,7 @@ func main() {
 }
 
 func getAvailableCommands() []string {
-	if len(availableCommands) == 0 {
-		availableCommands = []string{BUILD_COMMAND, DEV_WEBSERVER_COMMAND}
-	}
-	return availableCommands
+	return []string{BUILD_COMMAND, DEV_WEBSERVER_COMMAND}
 }
 
 func isValidCommand(command string) bool {
