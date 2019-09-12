@@ -2,7 +2,6 @@ package webserver
 
 import (
 	"fmt"
-	"golb/fsutils"
 	"testing"
 
 	"github.com/spf13/afero"
@@ -31,7 +30,7 @@ func TestGeneratePageFilename(t *testing.T) {
 		"index.md",
 	}
 	for _, f := range files2create {
-		_, err := fs.Create(fsutils.GetContentSrcFullPath(f))
+		_, err := fs.Create(pathresolver.GetContentSrcFullPath(f))
 
 		if err != nil {
 			t.Fatal(err.Error())
@@ -47,7 +46,7 @@ func TestGeneratePageFilename(t *testing.T) {
 
 	// file cleanup
 	for _, f := range files2create {
-		err := fs.Remove(fsutils.GetContentSrcFullPath(f))
+		err := fs.Remove(pathresolver.GetContentSrcFullPath(f))
 
 		if err != nil {
 			t.Fatal(err.Error())

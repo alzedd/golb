@@ -1,12 +1,17 @@
 package fsutils
 
 import (
-	"golb/settings"
 	"io/ioutil"
 	"path"
 )
 
-func GetFilesList(dir string) ([]string, error) {
+type fsutils struct{}
+
+func New() *fsutils {
+	return &fsutils{}
+}
+
+func (fsu *fsutils) GetFilesList(dir string) ([]string, error) {
 	files, err := ioutil.ReadDir(dir)
 	var fileList []string
 	if err == nil {
@@ -17,18 +22,18 @@ func GetFilesList(dir string) ([]string, error) {
 	return fileList, err
 }
 
-func GetAssetsPath() string {
-	return path.Join("_themes", settings.Get("THEME"), "assets")
+func (fsu *fsutils) GetAssetsPath() string {
+	return path.Join("_themes", settingsgetter.Get("THEME"), "assets")
 }
 
-func GetLayoutsFolder() string {
-	return path.Join("_themes", settings.Get("THEME"), "layouts")
+func (fsu *fsutils) GetLayoutsFolder() string {
+	return path.Join("_themes", settingsgetter.Get("THEME"), "layouts")
 }
 
-func GetBlocksFolder() string {
-	return path.Join("_themes", settings.Get("THEME"), "blocks")
+func (fsu *fsutils) GetBlocksFolder() string {
+	return path.Join("_themes", settingsgetter.Get("THEME"), "blocks")
 }
 
-func GetAssetsDestPath() string {
-	return path.Join(settings.Get("DIST_FOLDER"))
+func (fsu *fsutils) GetAssetsDestPath() string {
+	return path.Join(settingsgetter.Get("DIST_FOLDER"))
 }

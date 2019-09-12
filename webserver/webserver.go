@@ -1,7 +1,6 @@
 package webserver
 
 import (
-	"golb/fsutils"
 	"golb/taxonomy"
 	"net/http"
 
@@ -22,9 +21,10 @@ type Route struct {
 type Routes []Route
 
 func NewRouter() *Router {
+
 	pr := taxonomy.NewPageRepository()
 	hc := newService(pr)
-	assetsDir := fsutils.GetAssetsPath()
+	assetsDir := pathresolver.GetAssetsPath()
 	router := Router{}
 	router.Router = mux.NewRouter().StrictSlash(true)
 	router.Router.

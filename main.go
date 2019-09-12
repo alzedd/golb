@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"golb/commands"
+	"golb/settings"
 	"os"
 )
 
@@ -16,13 +17,14 @@ func main() {
 
 	if isValidCommand(command) {
 		defer fmt.Printf("\n\nEverything done! Goodbye.\n\n")
+		settings := settings.Instance()
 
 		switch command {
 		case BUILD_COMMAND:
 			commands.Build()
 			break
 		case DEV_WEBSERVER_COMMAND:
-			commands.Develop()
+			commands.Develop(settings)
 			break
 		}
 	} else {

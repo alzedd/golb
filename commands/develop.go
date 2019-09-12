@@ -2,14 +2,13 @@ package commands
 
 import (
 	"fmt"
-	"golb/settings"
 	"golb/webserver"
 	"log"
 	"net/http"
 )
 
-func Develop() {
-	fmt.Printf("Starting development web server on http://localhost:%s\n", settings.Get("PORT"))
+func Develop(s settingsGetter) {
+	fmt.Printf("Starting development web server on http://localhost:%s\n", s.Get("PORT"))
 	router := webserver.NewRouter()
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", settings.Get("PORT")), router))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", s.Get("PORT")), router))
 }

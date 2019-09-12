@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golb/fsutils"
 	"golb/parsing"
+	"golb/settings"
 	"golb/taxonomy"
 	"io/ioutil"
 	"os"
@@ -13,6 +14,17 @@ import (
 
 	"github.com/otiai10/copy"
 )
+
+type pathResolver interface {
+	GetFileContent(file string) ([]byte, error)
+	GetLayoutsFolder() string
+	GetBlocksFolder() string
+	GetFilesList(dir string) ([]string, error)
+	GetContentSrcFolder() string
+}
+
+var s = settings.Instance()
+var pathresolver = fsutils.New()
 
 type Pageparser interface {
 	GetStore() *taxonomy.PageRepository
@@ -44,7 +56,7 @@ func (s service) SaveAll() (err error) {
 		explPath = explPath[1:]
 		distPageFilename = strings.Join(explPath, string(os.PathSeparator))
 
-		newHtmlFile := fsutils.GetContentDistFullPath(distPageFilename + ".html")
+		newHtmlFile := pathresolver.GetContentDistFullPath(distPageFilename + ".html")
 		err = ioutil.WriteFile(newHtmlFile, []byte(p.GetFullHtml()), 0644)
 		fmt.Printf("--:: Saving file :: %s\n", newHtmlFile)
 	}
@@ -53,7 +65,7 @@ func (s service) SaveAll() (err error) {
 }
 
 func (s service) SaveAssets() {
-	srcAssetsDir := fsutils.GetAssetsPath()
-	destAssetsDir := path.Join(fsutils.GetAssetsDestPath(), "static")
+	srcAssetsDir := pathresolver.GetAssetsPath()
+	destAssetsDir := path.Join(pathresolver.GetAssetsDestPath(), "static")
 	copy.Copy(srcAssetsDir, destAssetsDir)
 }

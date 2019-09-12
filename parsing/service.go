@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"golb/fsutils"
 	"golb/settings"
 	"golb/taxonomy"
 	"html/template"
@@ -16,8 +15,23 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 )
 
+type settingsGetter interface {
+	Get(name string) (v string)
+}
+
+type pathResolver interface {
+	GetFileContent(file string) ([]byte, error)
+	GetLayoutsFolder() string
+	GetBlocksFolder() string
+	GetFilesList(dir string) ([]string, error)
+	GetContentSrcFolder() string
+}
+
+var settingsgetter = settings.Instance()
+
 type service struct {
-	store PageGetter
+	store        PageGetter
+	pathresolver pathResolver
 }
 
 type PageGetter interface {
@@ -47,11 +61,11 @@ func (s *service) ParsePageFile(fn string) (p *taxonomy.Page, err error) {
 	markDownData := []byte{}
 	p = &taxonomy.Page{Filename: fn}
 
-	markDownData, err = fsutils.GetFileContent(fn)
+	markDownData, err = s.pathresolver.GetFileContent(fn)
 
 	if err == nil {
 		p.MarkDownContent = string(markDownData)
-		p.BlogName = settings.Get("BLOG_NAME")
+		p.BlogName = settingsgetter.Get("BLOG_NAME")
 		s.SetPageMetadata(markDownData, p)
 		s.generateHtmlContent(p)
 		s.setPageFullHtml(p)
@@ -66,13 +80,13 @@ func (s *service) ParsePageFile(fn string) (p *taxonomy.Page, err error) {
 func (s *service) SetPageMetadata(PageContent []byte, p *taxonomy.Page) {
 	frontmatter.Unmarshal(PageContent, p)
 	if len(p.Layout) == 0 {
-		s.setPageLayout(settings.Get("DEFAULT_LAYOUT"), p)
+		s.setPageLayout(settingsgetter.Get("DEFAULT_LAYOUT"), p)
 	}
 }
 
 func (s *service) setPageLayout(l string, p *taxonomy.Page) {
 	if len(l) == 0 {
-		p.Layout = settings.Get("DEFAULT_LAYOUT")
+		p.Layout = settingsgetter.Get("DEFAULT_LAYOUT")
 	} else {
 		p.Layout = l
 	}
@@ -80,11 +94,11 @@ func (s *service) setPageLayout(l string, p *taxonomy.Page) {
 
 func (s *service) setPageFullHtml(p *taxonomy.Page) {
 	buff := &bytes.Buffer{}
-	layoutFolder := fsutils.GetLayoutsFolder()
+	layoutFolder := s.pathresolver.GetLayoutsFolder()
 	layout := path.Join(layoutFolder, p.Layout+".html")
 
-	blocksFolder := fsutils.GetBlocksFolder()
-	blocks, _ := fsutils.GetFilesList(blocksFolder)
+	blocksFolder := s.pathresolver.GetBlocksFolder()
+	blocks, _ := s.pathresolver.GetFilesList(blocksFolder)
 
 	for bIdx, b := range blocks {
 		blocks[bIdx] = path.Join(blocksFolder, b)
@@ -110,14 +124,15 @@ func (s *service) GetStore() *taxonomy.PageRepository {
 }
 
 func (s *service) ParseAll() {
-	folderList, err := fsutils.GetFilesList(fsutils.GetContentSrcFolder())
+	folderList, err := s.pathresolver.GetFilesList(s.pathresolver.GetContentSrcFolder())
+	fmt.Printf("%+v\n", folderList)
 
 	if err == nil {
 		for _, folder := range folderList {
 			var fileList []string
 			var err error
 
-			folderFullPath := path.Join(fsutils.GetContentSrcFolder(), folder)
+			folderFullPath := path.Join(s.pathresolver.GetContentSrcFolder(), folder)
 			folderInfo, err2 := os.Stat(folderFullPath)
 			if err2 != nil {
 				fmt.Println(folderFullPath)
@@ -127,9 +142,9 @@ func (s *service) ParseAll() {
 
 			if err == nil {
 				if folderInfo.IsDir() {
-					fileList, err = fsutils.GetFilesList(folderFullPath)
+					fileList, err = s.pathresolver.GetFilesList(folderFullPath)
 				} else {
-					folderFullPath = fsutils.GetContentSrcFolder()
+					folderFullPath = s.pathresolver.GetContentSrcFolder()
 					fileList = []string{
 						folder,
 					}
