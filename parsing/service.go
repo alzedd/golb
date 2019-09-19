@@ -7,11 +7,14 @@ import (
 	"golb/settings"
 	"golb/taxonomy"
 	"html/template"
+	"io"
 	"os"
 	"path"
 
 	"github.com/ericaro/frontmatter"
 	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/ast"
+	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
 )
 
@@ -115,7 +118,12 @@ func (s *service) setPageFullHtml(p *taxonomy.Page) {
 func (s *service) generateHtmlContent(p *taxonomy.Page) {
 	extensions := parser.CommonExtensions | parser.Mmark
 	parser := parser.NewWithExtensions(extensions)
-	parsedHtml := string(markdown.ToHTML(([]byte)(p.MarkDownContent), parser, nil))
+	opts := html.RendererOptions{
+		Flags:          html.CommonFlags,
+		RenderNodeHook: handleCheckboxes,
+	}
+	renderer := html.NewRenderer(opts)
+	parsedHtml := string(markdown.ToHTML(([]byte)(p.MarkDownContent), parser, renderer))
 	p.HtmlContent = template.HTML(parsedHtml)
 }
 
@@ -159,4 +167,50 @@ func (s *service) ParseAll() {
 			}
 		}
 	}
+}
+
+func handleCheckboxes(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, bool) {
+
+	if _, ok := node.(*ast.Text); ok {
+		parent := node.GetParent()
+
+		if _, ok := parent.(*ast.Paragraph); !ok {
+			return ast.GoToNext, false
+		}
+
+		listItem := parent.GetParent()
+
+		if _, isListItem := listItem.(*ast.ListItem); isListItem {
+			text := node.AsLeaf().Literal
+
+			switch {
+			case bytes.HasPrefix(text, []byte("[ ] ")):
+				text = append([]byte(`<input type="checkbox" disabled="">`), text[3:]...)
+			case bytes.HasPrefix(text, []byte("[x] ")) || bytes.HasPrefix(text, []byte("[X] ")):
+				text = append([]byte(`<input type="checkbox" checked="" disabled="">`), text[3:]...)
+			}
+
+			w.Write([]byte(text))
+			return ast.GoToNext, true
+		}
+	} else if _, ok := node.(*ast.ListItem); ok {
+		for _, child := range node.GetChildren() {
+			if _, ok := child.(*ast.Paragraph); ok {
+				text := child.GetChildren()[0].AsLeaf().Literal
+				if bytes.HasPrefix(text, []byte("[ ] ")) || bytes.HasPrefix(text, []byte("[x] ")) || bytes.HasPrefix(text, []byte("[X] ")) {
+					newText := ""
+					if entering {
+						newText = "<li class=\"task-list-item\">"
+					} else {
+						newText = "</li>"
+					}
+					w.Write([]byte(newText))
+					return ast.GoToNext, true
+				}
+			}
+		}
+
+	}
+
+	return ast.GoToNext, false
 }
