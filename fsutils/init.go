@@ -1,6 +1,6 @@
 package fsutils
 
-import "golb/settings"
+import "github.com/alzedd/golb/settings"
 
 type settingsGetter interface {
 	Get(name string) (v string)

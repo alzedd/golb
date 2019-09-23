@@ -1,8 +1,9 @@
 package webserver
 
 import (
-	"golb/taxonomy"
 	"net/http"
+
+	"github.com/alzedd/golb/taxonomy"
 
 	"github.com/gorilla/mux"
 )

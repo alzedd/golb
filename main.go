@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"golb/commands"
-	"golb/settings"
 	"os"
+
+	"github.com/alzedd/golb/commands"
+	"github.com/alzedd/golb/settings"
 )
 
 const BUILD_COMMAND = "build"

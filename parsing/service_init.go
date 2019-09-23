@@ -1,7 +1,7 @@
 package parsing
 
 import (
-	"golb/fsutils"
+	"github.com/alzedd/golb/fsutils"
 )
 
 func NewPageService(pagestore PageGetter) *service {

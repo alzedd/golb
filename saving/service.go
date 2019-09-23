@@ -2,15 +2,16 @@ package saving
 
 import (
 	"fmt"
-	"golb/fsutils"
-	"golb/parsing"
-	"golb/settings"
-	"golb/taxonomy"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/alzedd/golb/fsutils"
+	"github.com/alzedd/golb/parsing"
+	"github.com/alzedd/golb/settings"
+	"github.com/alzedd/golb/taxonomy"
 
 	"github.com/otiai10/copy"
 )

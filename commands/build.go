@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"golb/saving"
-	"golb/taxonomy"
+	"github.com/alzedd/golb/saving"
+	"github.com/alzedd/golb/taxonomy"
 )
 
 func Build() {

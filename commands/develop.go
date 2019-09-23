@@ -2,9 +2,10 @@ package commands
 
 import (
 	"fmt"
-	"golb/webserver"
 	"log"
 	"net/http"
+
+	"github.com/alzedd/golb/webserver"
 
 	"github.com/jaschaephraim/lrserver"
 	"github.com/rjeczalik/notify"

@@ -1,6 +1,6 @@
-module golb
+module github.com/alzedd/golb
 
-go 1.12
+go 1.13
 
 require (
 	github.com/ericaro/frontmatter v0.0.0-20141225210444-9fedef9406e4

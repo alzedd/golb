@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"golb/settings"
-	"golb/taxonomy"
 	"html/template"
 	"io"
 	"os"
 	"path"
+
+	"github.com/alzedd/golb/settings"
+	"github.com/alzedd/golb/taxonomy"
 
 	"github.com/ericaro/frontmatter"
 	"github.com/gomarkdown/markdown"

@@ -1,16 +1,17 @@
 package webserver
 
 import (
-	"golb/fsutils"
-	"golb/parsing"
-	"golb/settings"
-	"golb/taxonomy"
 	"html/template"
 	"net/http"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/alzedd/golb/fsutils"
+	"github.com/alzedd/golb/parsing"
+	"github.com/alzedd/golb/settings"
+	"github.com/alzedd/golb/taxonomy"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/afero"
