@@ -1,7 +1,6 @@
 package webserver
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/alzedd/golb/taxonomy"
@@ -40,8 +39,6 @@ func NewRouter() *Router {
 }
 
 func (router *Router) AddRoute(route Route) {
-	fmt.Println("CI")
-
 	router.Router.
 		Methods(route.Method).
 		Path(route.Pattern).
