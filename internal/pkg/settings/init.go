@@ -1,8 +1,18 @@
 package settings
 
-import (
-	"github.com/spf13/viper"
-)
+import "github.com/spf13/viper"
+
+type config struct {
+	filetype string
+	path     string
+	name     string
+}
+
+var cfg *config = &config{
+	filetype: "yaml",
+	path:     ".",
+	name:     ".golb",
+}
 
 var dfsettings map[string]interface{} = map[string]interface{}{
 	"port":           3333,
@@ -14,13 +24,12 @@ var dfsettings map[string]interface{} = map[string]interface{}{
 }
 
 func init() {
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".")
-	viper.SetConfigName(".golb")
+	viper.SetConfigType(cfg.filetype)
+	viper.AddConfigPath(cfg.path)
+	viper.SetConfigName(cfg.name)
 
 	for dfsettingkey, dfsettingval := range dfsettings {
 		viper.BindEnv(dfsettingkey)
-		// make sure that envs vars have the same names as the yml/default values
 		viper.SetDefault(dfsettingkey, dfsettingval)
 	}
 }

@@ -1,25 +1,33 @@
 package settings
 
 import (
-	"fmt"
+	"log"
+	"path"
+	"strings"
 
 	"github.com/spf13/viper"
 )
 
-// ReadConfig reads in config file and ENV variables if set.
+func GetConfigPath() string     { return cfg.path }
+func GetConfigName() string     { return cfg.name }
+func GetConfigFileType() string { return cfg.filetype }
+
+// ReadConfig: reads in config file and ENV variables if set.
 func ReadConfig() {
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+
+			// load from environment variables or .env file
 			viper.AutomaticEnv()
 		}
 	}
 }
 
-// writeConfig writes a yml file with default settings
-func WriteConfig() {
-	if err := viper.SafeWriteConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			fmt.Println(err.Error())
-		}
+// writeConfig: writes an yml file with loaded settings
+func WriteConfig(force bool) {
+	filepath := path.Join(cfg.path, cfg.name+"."+strings.ToLower(cfg.filetype))
+
+	if err := viper.WriteConfigAs(filepath); err != nil {
+		log.Fatal(err.Error())
 	}
 }

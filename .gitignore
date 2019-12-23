@@ -1,0 +1,11 @@
+.env
+.DS_Store
+golb
+dist
+!dist/.keep
+_content
+/*!_content/.keep*/
+coverprofile.out
+*.test
+.golb.yml
+
