@@ -8,12 +8,14 @@ import (
 	"github.com/spf13/viper"
 )
 
-func GetConfigPath() string     { return cfg.path }
-func GetConfigName() string     { return cfg.name }
-func GetConfigFileType() string { return cfg.filetype }
+type Settings int
+
+func (s *Settings) GetConfigPath() string     { return cfg.path }
+func (s *Settings) GetConfigName() string     { return cfg.name }
+func (s *Settings) GetConfigFileType() string { return cfg.filetype }
 
 // ReadConfig: reads in config file and ENV variables if set.
-func ReadConfig() {
+func (s *Settings) ReadConfig() {
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 
@@ -24,7 +26,7 @@ func ReadConfig() {
 }
 
 // writeConfig: writes an yml file with loaded settings
-func WriteConfig(force bool) {
+func (s *Settings) WriteConfig(force bool) {
 	filepath := path.Join(cfg.path, cfg.name+"."+strings.ToLower(cfg.filetype))
 
 	if err := viper.WriteConfigAs(filepath); err != nil {

@@ -12,7 +12,7 @@ var initdirsCmd = &cobra.Command{
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
 		fs := afero.NewOsFs()
-		fsutils.MkDirs(fs)
+		fsutils.MkDirs(fs, s)
 	},
 }
 

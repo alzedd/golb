@@ -25,5 +25,6 @@ func Execute() {
 }
 
 func init() {
-	cobra.OnInitialize(settings.ReadConfig)
+	var s *settings.Settings
+	cobra.OnInitialize(s.ReadConfig)
 }

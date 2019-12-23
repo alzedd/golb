@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/alzedd/golb/internal/pkg/settings"
 	"github.com/spf13/cobra"
 )
 
@@ -10,7 +9,7 @@ var initconfigCmd = &cobra.Command{
 	Short: "",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
-		settings.WriteConfig(true)
+		s.WriteConfig(true)
 	},
 }
 
